@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Terminal_IO.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,8 +23,17 @@ namespace Terminal_IO.View
     /// </summary>
     public sealed partial class DeviceListPage : Page
     {
+        public static readonly DependencyProperty ViewModelProperty =
+            DependencyProperty.Register(nameof(ViewModel), typeof(DeviceListViewModel), typeof(DeviceListPage), new PropertyMetadata(null));
+
+        public DeviceListViewModel ViewModel
+        {
+            get { return (DeviceListViewModel)GetValue(ViewModelProperty); }
+            set { SetValue(ViewModelProperty, value); }
+        }
         public DeviceListPage()
         {
+            ViewModel = new DeviceListViewModel();
             this.InitializeComponent();
         }
     }
