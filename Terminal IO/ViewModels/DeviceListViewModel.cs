@@ -15,11 +15,13 @@ namespace Terminal_IO.ViewModels
     {
         private DeviceWatcher deviceWatcher;
 
+        public static DeviceListViewModel Instance { get; } = new Lazy<DeviceListViewModel>(() => new DeviceListViewModel()).Value;
+
         [Reactive]
         public ObservableCollection<DeviceViewModel> KnownDevices
         {
             get;
-            set;
+            private set;
         }
 
         public DeviceListViewModel()
@@ -43,7 +45,8 @@ namespace Terminal_IO.ViewModels
             deviceWatcher.Added += DeviceWatcher_Added;
             deviceWatcher.Updated += DeviceWatcher_Updated;
             //deviceWatcher.Removed += DeviceWatcher_Removed;
-
+            //deviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
+            //deviceWatcher.Stopped += DeviceWatcher_Stopped;
             // Start over with an empty collection.
             KnownDevices.Clear();
 
@@ -79,6 +82,7 @@ namespace Terminal_IO.ViewModels
                 {
                     if (deviceInfo.Name != string.Empty)
                     {
+                        
                         // If device has a friendly name display it immediately.
                         KnownDevices.Add(new DeviceViewModel(deviceInfo));
                     }                    
@@ -98,10 +102,36 @@ namespace Terminal_IO.ViewModels
                 if (bleDevice != null)
                 {
                     // Device is already being displayed - update UX.
-                    //bleDeviceDisplay.Update(deviceInfoUpdate);
+                    bleDevice.Update(deviceInfoUpdate);
                     return;
                 }              
             }
         }
+
+        /*
+        private void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate deviceInfoUpdate)
+        {
+            Debug.WriteLine(String.Format("Removed {0}{1}", deviceInfoUpdate.Id, ""));
+
+            // Protect against race condition if the task runs after the app stopped the deviceWatcher.
+            if (sender == deviceWatcher)
+            {
+                // Find the corresponding DeviceInformation in the collection and remove it.
+                DeviceViewModel bleDevice = FindBluetoothLEDevice(deviceInfoUpdate.Id);
+                KnownDevices.Remove(bleDevice);
+            }
+        }
+
+        
+        private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object e)
+        {
+            
+        }
+
+        private void DeviceWatcher_Stopped(DeviceWatcher sender, object e)
+        {
+            
+        }
+        */
     }
 }

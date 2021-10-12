@@ -24,7 +24,7 @@ namespace Terminal_IO.View
     public sealed partial class DeviceListPage : Page
     {
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register(nameof(ViewModel), typeof(DeviceListViewModel), typeof(DeviceListPage), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(ViewModel), typeof(DeviceListViewModel), typeof(DeviceListPage), new PropertyMetadata(DeviceListViewModel.Instance));
 
         public DeviceListViewModel ViewModel
         {
@@ -33,8 +33,17 @@ namespace Terminal_IO.View
         }
         public DeviceListPage()
         {
-            ViewModel = new DeviceListViewModel();
             this.InitializeComponent();
+        }
+
+        
+
+        private async void PairButton_Click(object sender, RoutedEventArgs e)
+        {
+            var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
+
+            // BT_Code: Pair the currently selected device.
+            await bleDevice.DeviceInformation.Pairing.PairAsync();
         }
     }
 }

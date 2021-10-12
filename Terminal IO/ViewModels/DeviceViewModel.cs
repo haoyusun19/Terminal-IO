@@ -13,10 +13,15 @@ namespace Terminal_IO.ViewModels
     {
         public DeviceViewModel(DeviceInformation deviceInfoIn)
         {
-            Id = deviceInfoIn.Id;
-            Name = deviceInfoIn.Name;
-            IsPaired = deviceInfoIn.Pairing.IsPaired;
+            DeviceInformation = deviceInfoIn;
+            Id = DeviceInformation.Id;
+            Name = DeviceInformation.Name;
+            IsPaired = DeviceInformation.Pairing.IsPaired;
+            IsUnPaired = !DeviceInformation.Pairing.IsPaired;           
         }
+
+        [Reactive]
+        public DeviceInformation DeviceInformation { get; set; }
 
         [Reactive]
         public string Id
@@ -37,6 +42,17 @@ namespace Terminal_IO.ViewModels
         {
             get;
             set;
+        }
+        
+        public bool IsUnPaired
+        {
+            get;
+            set;
+        }
+
+        public void Update(DeviceInformationUpdate deviceInfoUpdate)
+        {
+            DeviceInformation.Update(deviceInfoUpdate);            
         }
     }
 }
