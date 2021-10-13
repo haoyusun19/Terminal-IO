@@ -25,7 +25,6 @@ namespace Terminal_IO.View
     /// </summary>
     public sealed partial class ServicesPage : Page
     {
-        private BluetoothLEDevice bluetoothLeDevice = null;
 
         public static readonly DependencyProperty ViewModelProperty =
             DependencyProperty.Register(nameof(ViewModel), typeof(ServiceListViewModel), typeof(ServicesPage), new PropertyMetadata(ServiceListViewModel.Instance));
@@ -43,7 +42,19 @@ namespace Terminal_IO.View
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            BackButton.IsEnabled = false;
             await ViewModel.GetServices((Application.Current as App).SelectedBleDeviceId);
-        }        
+            BackButton.IsEnabled = true;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            ViewModel.ClearBluetoothLEDevice();
+        }
+
+        private void PreviousPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(DeviceListPage));
+        }
     }
 }

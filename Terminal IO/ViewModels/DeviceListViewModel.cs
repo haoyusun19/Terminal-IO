@@ -42,8 +42,8 @@ namespace Terminal_IO.ViewModels
                         DeviceInformationKind.AssociationEndpoint);
 
             // Register event handlers before starting the watcher.
-            deviceWatcher.Added += DeviceWatcher_Added;
-            deviceWatcher.Updated += DeviceWatcher_Updated;
+            //deviceWatcher.Added += DeviceWatcher_Added;
+            //deviceWatcher.Updated += DeviceWatcher_Updated;
             //deviceWatcher.Removed += DeviceWatcher_Removed;
             //deviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
             //deviceWatcher.Stopped += DeviceWatcher_Stopped;
@@ -55,7 +55,7 @@ namespace Terminal_IO.ViewModels
             // To monitor for the presence of Bluetooth LE devices for an extended period,
             // use the BluetoothLEAdvertisementWatcher runtime class. See the BluetoothAdvertisement
             // sample for an example.
-            deviceWatcher.Start();
+            //deviceWatcher.Start();
         }
 
         private DeviceViewModel FindBluetoothLEDevice(string id)
@@ -144,11 +144,19 @@ namespace Terminal_IO.ViewModels
                 //deviceWatcher.Removed -= DeviceWatcher_Removed;
                 //deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
                 //deviceWatcher.Stopped -= DeviceWatcher_Stopped;
-
+                //KnownDevices.Clear();
                 // Stop the watcher.
                 deviceWatcher.Stop();
-                deviceWatcher = null;
             }
+        }
+
+        public void StartBleDeviceWatcher()
+        {
+            deviceWatcher.Added += DeviceWatcher_Added;
+            deviceWatcher.Updated += DeviceWatcher_Updated;
+            //KnownDevices.Clear();
+            // Start the watcher.
+            deviceWatcher.Start();
         }
     }
 }

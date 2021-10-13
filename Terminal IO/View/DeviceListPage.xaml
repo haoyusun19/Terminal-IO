@@ -33,7 +33,7 @@
             <TextBlock Text="Discover GATT servers"/>
             <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
                 <Button Content="Pair" Click="PairButton_Click" IsEnabled="{x:Bind ResultsListView.SelectedItem.(loc:DeviceViewModel.IsUnPaired), FallbackValue=False, Mode=OneWay}" Margin="0,0,10,0"></Button>
-                <Button Content="To service page" Click="NavigateButton_Click" IsEnabled="{x:Bind ResultsListView.SelectedItem.(loc:DeviceViewModel.IsPaired), FallbackValue=False, Mode=OneWay}" Margin="0,0,10,0"/>
+                <Button Content="To service page" Click="NextPageButton_Click" IsEnabled="{x:Bind ResultsListView.SelectedItem.(loc:DeviceViewModel.IsPaired), FallbackValue=False, Mode=OneWay}" Margin="0,0,10,0"/>
             </StackPanel>
         </StackPanel>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0"

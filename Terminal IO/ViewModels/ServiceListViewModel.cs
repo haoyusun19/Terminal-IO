@@ -16,7 +16,11 @@ namespace Terminal_IO.ViewModels
     {
         public static ServiceListViewModel Instance { get; } = new Lazy<ServiceListViewModel>(() => new ServiceListViewModel()).Value;
 
-        BluetoothLEDevice bluetoothLeDevice;
+        public BluetoothLEDevice BluetoothLeDevice
+        {
+            get;
+            set;
+        }
 
         [Reactive]
         public ObservableCollection<ServiceViewModel> Sevices
@@ -32,14 +36,15 @@ namespace Terminal_IO.ViewModels
 
         public async Task GetServices(string deviceId)
         {
-            bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
+            Sevices.Clear();
+            BluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(deviceId);
 
-            if (bluetoothLeDevice != null)
+            if (BluetoothLeDevice != null)
             {
                 // Note: BluetoothLEDevice.GattServices property will return an empty list for unpaired devices. For all uses we recommend using the GetGattServicesAsync method.
                 // BT_Code: GetGattServicesAsync returns a list of all the supported services of the device (even if it's not paired to the system).
                 // If the services supported by the device are expected to change during BT usage, subscribe to the GattServicesChanged event.
-                GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
+                GattDeviceServicesResult result = await BluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
 
                 if (result.Status == GattCommunicationStatus.Success)
                 {
@@ -48,13 +53,19 @@ namespace Terminal_IO.ViewModels
                     {
                         Debug.WriteLine(String.Format("Added {0}", service.DeviceId));
                         Sevices.Add(new ServiceViewModel(service));
-                    }                   
+                    }                    
                 }
             }
             else
             {
                 Debug.WriteLine("Can not connect");
             }
+        }
+
+        public void ClearBluetoothLEDevice()
+        {
+            BluetoothLeDevice?.Dispose();
+            BluetoothLeDevice = null;
         }
     }
 }

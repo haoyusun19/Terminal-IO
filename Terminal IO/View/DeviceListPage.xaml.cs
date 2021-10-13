@@ -36,8 +36,7 @@ namespace Terminal_IO.View
             this.InitializeComponent();
         }
 
-        
-
+       
         private async void PairButton_Click(object sender, RoutedEventArgs e)
         {
             var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
@@ -58,7 +57,12 @@ namespace Terminal_IO.View
             }
         }
 
-        private void NavigateButton_Click(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            ViewModel.StartBleDeviceWatcher();
+        }
+
+        private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(ServicesPage));
         }
