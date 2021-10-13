@@ -45,5 +45,22 @@ namespace Terminal_IO.View
             // BT_Code: Pair the currently selected device.
             await bleDevice.DeviceInformation.Pairing.PairAsync();
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            ViewModel.StopBleDeviceWatcher();
+            // Save the selected device's ID for use in other scenarios.
+            var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
+            if (bleDevice != null)
+            {
+                (Application.Current as App).SelectedBleDeviceId = bleDevice.Id;
+                (Application.Current as App).SelectedBleDeviceName = bleDevice.Name;
+            }
+        }
+
+        private void NavigateButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(ServicesPage));
+        }
     }
 }

@@ -22,6 +22,9 @@ namespace Terminal_IO
     /// </summary>
     sealed partial class App : Application
     {
+        public string SelectedBleDeviceId;
+        public string SelectedBleDeviceName;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Terminal_IO.View.DeviceListPage"
+    x:Class="Terminal_IO.View.ServicesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Terminal_IO.View"
@@ -10,14 +10,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="ResultsListViewTemplate" x:DataType="loc:DeviceViewModel">
+        <DataTemplate x:Key="ResultsListViewTemplate" x:DataType="loc:ServiceViewModel">
             <Grid Margin="5">
                 <StackPanel Grid.Column="1" Margin="5">
                     <TextBlock TextWrapping="WrapWholeWords">
-                        Name: <Run Text="{x:Bind Name, Mode=OneWay}" FontWeight="Bold"/>
-                    </TextBlock>
-                    <TextBlock>
-                        IsPaired: <Run Text="{x:Bind IsPaired, Mode=OneWay}"/>
+                        ServiceName: <Run Text="{x:Bind ServiceName, Mode=OneWay}" FontWeight="Bold"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
@@ -30,18 +27,13 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,10">
             <TextBlock Text="Description:"/>
-            <TextBlock Text="Discover GATT servers"/>
-            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                <Button Content="Pair" Click="PairButton_Click" IsEnabled="{x:Bind ResultsListView.SelectedItem.(loc:DeviceViewModel.IsUnPaired), FallbackValue=False, Mode=OneWay}" Margin="0,0,10,0"></Button>
-                <Button Content="To service page" Click="NavigateButton_Click" IsEnabled="{x:Bind ResultsListView.SelectedItem.(loc:DeviceViewModel.IsPaired), FallbackValue=False, Mode=OneWay}" Margin="0,0,10,0"/>
-            </StackPanel>
+            <TextBlock Text="GATT services"/>
         </StackPanel>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0"
                       BorderBrush="AntiqueWhite" BorderThickness="1">
             <ListView x:Name="ResultsListView"
                       ItemTemplate="{StaticResource ResultsListViewTemplate}"
-                      ItemsSource="{x:Bind ViewModel.KnownDevices, Mode=OneWay}"/>
+                      ItemsSource="{x:Bind ViewModel.Sevices, Mode=OneWay}"/>
         </ScrollViewer>
     </Grid>
 </Page>
-

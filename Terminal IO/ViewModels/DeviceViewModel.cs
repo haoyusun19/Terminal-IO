@@ -20,7 +20,6 @@ namespace Terminal_IO.ViewModels
             IsUnPaired = !DeviceInformation.Pairing.IsPaired;           
         }
 
-        [Reactive]
         public DeviceInformation DeviceInformation { get; set; }
 
         [Reactive]

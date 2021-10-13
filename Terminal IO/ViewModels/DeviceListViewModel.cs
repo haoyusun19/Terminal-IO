@@ -21,7 +21,7 @@ namespace Terminal_IO.ViewModels
         public ObservableCollection<DeviceViewModel> KnownDevices
         {
             get;
-            private set;
+            set;
         }
 
         public DeviceListViewModel()
@@ -122,7 +122,7 @@ namespace Terminal_IO.ViewModels
             }
         }
 
-        
+        /*
         private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object e)
         {
             
@@ -133,5 +133,22 @@ namespace Terminal_IO.ViewModels
             
         }
         */
+
+        public void StopBleDeviceWatcher()
+        {
+            if (deviceWatcher != null)
+            {
+                // Unregister the event handlers.
+                deviceWatcher.Added -= DeviceWatcher_Added;
+                deviceWatcher.Updated -= DeviceWatcher_Updated;
+                //deviceWatcher.Removed -= DeviceWatcher_Removed;
+                //deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
+                //deviceWatcher.Stopped -= DeviceWatcher_Stopped;
+
+                // Stop the watcher.
+                deviceWatcher.Stop();
+                deviceWatcher = null;
+            }
+        }
     }
 }
