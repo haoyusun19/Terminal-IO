@@ -65,6 +65,12 @@ namespace Terminal_IO.ViewModels
             {
                 Debug.WriteLine("Can not get service");
             }
+        }      
+
+        public void ClearGattDeviceService()
+        {
+            GattDeviceService?.Dispose();
+            GattDeviceService = null;
         }
     }
 }

@@ -24,16 +24,31 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,10">
             <TextBlock Text="Description:"/>
             <TextBlock Text="GATT characteristics"/>
+            <Button Name="BackButton"  Content="Back to service page" Click="PreviousPageButton_Click" Margin="0,0,10,0"/>
         </StackPanel>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0"
                       BorderBrush="AntiqueWhite" BorderThickness="1">
-            <ListView x:Name="ResultsListView"
+            <StackPanel>
+                <ListView x:Name="ResultsListView"
                       ItemTemplate="{StaticResource ResultsListViewTemplate}"
-                      ItemsSource="{x:Bind ViewModel.Characteristics, Mode=OneWay}"/>
+                      ItemsSource="{x:Bind ViewModel.Characteristics, Mode=OneWay}"
+                      SelectionChanged="{x:Bind CharacteristicList_SelectionChanged}" />
+                
+            </StackPanel>
         </ScrollViewer>
+        <StackPanel x:Name="StatusPanel" Orientation="Vertical" Grid.Row="2">
+            <TextBlock x:Name="StatusLabel" Margin="10,0,0,10" TextWrapping="Wrap" Text="Status:" />
+            <Border x:Name="StatusBorder" Margin="0,0,0,0">
+                <ScrollViewer VerticalScrollMode="Auto"  VerticalScrollBarVisibility="Auto" MaxHeight="200">
+                    <!-- Use LiveSetting to enable screen readers to announce the status update. -->
+                    <TextBlock x:Name="StatusBlock" FontWeight="Bold" Margin="10,10,10,20" TextWrapping="Wrap"  />
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
     </Grid>
 </Page>
