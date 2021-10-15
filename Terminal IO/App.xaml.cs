@@ -25,6 +25,8 @@ namespace Terminal_IO
         public string SelectedBleDeviceId;
         public string SelectedBleDeviceName;
 
+        public string SelectedBleServiceId;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="d18ea5c2-6956-44d8-92ce-49717340001c"
-    Publisher="CN=sunha"
+    Name="14403HaoyuSun.TerminalIO"
+    Publisher="CN=C0751C24-8FE6-4AD2-A228-A865BD5E0AF9"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="d18ea5c2-6956-44d8-92ce-49717340001c" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="64a6c5e5-a402-4c27-a332-c5598e59995e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Terminal IO</DisplayName>
-    <PublisherDisplayName>sunha</PublisherDisplayName>
+    <DisplayName>Terminal I/O</DisplayName>
+    <PublisherDisplayName>Haoyu Sun</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="Terminal_IO.App">
       <uap:VisualElements
-        DisplayName="Terminal IO"
+        DisplayName="Terminal I/O"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Terminal IO"

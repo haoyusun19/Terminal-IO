@@ -43,18 +43,30 @@ namespace Terminal_IO.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             BackButton.IsEnabled = false;
+            NextButton.IsEnabled = false;
             await ViewModel.GetServices((Application.Current as App).SelectedBleDeviceId);
             BackButton.IsEnabled = true;
+            NextButton.IsEnabled = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             ViewModel.ClearBluetoothLEDevice();
+            var bleService = ResultsListView.SelectedItem as ServiceViewModel;
+            if (bleService != null)
+            {
+                (Application.Current as App).SelectedBleServiceId = bleService.Id;
+            }
         }
 
         private void PreviousPageButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(DeviceListPage));
+        }
+
+        private void NextPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CharacteristicsPage));
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Terminal_IO.ViewModels
             }
             else
             {
-                Debug.WriteLine("Can not connect");
+                Debug.WriteLine("Can not get device");
             }
         }
 

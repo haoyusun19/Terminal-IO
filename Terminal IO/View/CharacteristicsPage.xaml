@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Terminal_IO.View.ServicesPage"
+    x:Class="Terminal_IO.View.CharacteristicsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Terminal_IO.View"
@@ -10,11 +10,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="ResultsListViewTemplate" x:DataType="loc:ServiceViewModel">
+        <DataTemplate x:Key="ResultsListViewTemplate" x:DataType="loc:CharacteristicViewModel">
             <Grid Margin="5">
                 <StackPanel Grid.Column="1" Margin="5">
                     <TextBlock TextWrapping="WrapWholeWords">
-                        ServiceName: <Run Text="{x:Bind ServiceName, Mode=OneWay}" FontWeight="Bold"/>
+                        CharacteristicName: <Run Text="{x:Bind CharacteristicName, Mode=OneWay}" FontWeight="Bold"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
@@ -27,17 +27,13 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,0,10">
             <TextBlock Text="Description:"/>
-            <TextBlock Text="GATT services"/>
-            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                <Button Name="BackButton"  Content="Back to device page" Click="PreviousPageButton_Click" Margin="0,0,10,0"/>
-                <Button Name="NextButton" Content="To characteristics page" Click="NextPageButton_Click" Margin="0,0,10,0"/>
-            </StackPanel>
+            <TextBlock Text="GATT characteristics"/>
         </StackPanel>
         <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0"
                       BorderBrush="AntiqueWhite" BorderThickness="1">
             <ListView x:Name="ResultsListView"
                       ItemTemplate="{StaticResource ResultsListViewTemplate}"
-                      ItemsSource="{x:Bind ViewModel.Sevices, Mode=OneWay}"/>
+                      ItemsSource="{x:Bind ViewModel.Characteristics, Mode=OneWay}"/>
         </ScrollViewer>
     </Grid>
 </Page>

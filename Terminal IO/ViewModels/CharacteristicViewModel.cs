@@ -10,25 +10,22 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 
 namespace Terminal_IO.ViewModels
 {
-    public class ServiceViewModel : ReactiveObject
+    public class CharacteristicViewModel : ReactiveObject
     {
-        public ServiceViewModel(GattDeviceService gattDeviceService)
+        public CharacteristicViewModel(GattCharacteristic gattCharacteristic)
         {
-            GattSevice = gattDeviceService;
-            Id = GattSevice.DeviceId;
-            ServiceName = DisplayHelper.GetServiceName(GattSevice);
+            Characteristic = gattCharacteristic;
+            CharacteristicName = DisplayHelper.GetCharacteristicName(Characteristic);
         }
 
-        public GattDeviceService GattSevice { get; set; }
-
-        [Reactive]
-        public string ServiceName
+        public GattCharacteristic Characteristic
         {
             get;
             set;
         }
 
-        public string Id
+        [Reactive]
+        public string CharacteristicName
         {
             get;
             set;
