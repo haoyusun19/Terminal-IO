@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Terminal_IO.ViewModels;
+using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -63,6 +64,57 @@ namespace Terminal_IO.View
             {
                 NotifyUser("Descriptor read failed.", NotifyType.ErrorMessage);
             }
+
+            // Enable/disable operations based on the GattCharacteristicProperties.
+            EnableCharacteristicPanels(selectedCharacteristic.Characteristic.CharacteristicProperties);
+        }
+
+        private void SetVisibility(UIElement element, bool visible)
+        {
+            element.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void EnableCharacteristicPanels(GattCharacteristicProperties properties)
+        {
+            // BT_Code: Hide the controls which do not apply to this characteristic.
+            SetVisibility(CharacteristicReadButton, properties.HasFlag(GattCharacteristicProperties.Read));
+
+            SetVisibility(CharacteristicWritePanel,
+                properties.HasFlag(GattCharacteristicProperties.Write) ||
+                properties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse));
+            CharacteristicWriteValue.Text = "";
+            SetVisibility(ValueChangedSubscribeToggle, properties.HasFlag(GattCharacteristicProperties.Indicate) ||
+                                                       properties.HasFlag(GattCharacteristicProperties.Notify));
+        }
+
+        private async void CharacteristicReadButton_Click()
+        {
+            // BT_Code: Read the actual value from the device by using Uncached.
+            GattReadResult result = await selectedCharacteristic.Characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
+            if (result.Status == GattCommunicationStatus.Success)
+            {
+                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value);
+                NotifyUser($"Read result: {formattedResult}", NotifyType.StatusMessage);
+            }
+            else
+            {
+                NotifyUser($"Read failed: {result.Status}", NotifyType.ErrorMessage);
+            }
+        }
+
+        private async void CharacteristicWriteButton_Click()
+        {
+
+        }
+
+        private async void CharacteristicWriteButtonInt_Click()
+        {
+
+        }
+
+        private async void ValueChangedSubscribeToggle_Click()
+        {
+
         }
 
         private void NotifyUser(string strMessage, NotifyType type)
