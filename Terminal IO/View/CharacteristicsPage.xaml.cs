@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Terminal_IO.Service;
 using Terminal_IO.ViewModels;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
@@ -29,6 +30,7 @@ namespace Terminal_IO.View
     public sealed partial class CharacteristicsPage : Page
     {
         private bool subscribedForNotifications = false;
+        private DataType datatype;
 
         private CharacteristicViewModel registeredCharacteristic;
         private CharacteristicViewModel selectedCharacteristic;
@@ -98,7 +100,7 @@ namespace Terminal_IO.View
             GattReadResult result = await selectedCharacteristic.Characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
             if (result.Status == GattCommunicationStatus.Success)
             {
-                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value);
+                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value,datatype);
                 NotifyUser($"Read result: {formattedResult}", NotifyType.StatusMessage);
             }
             else
@@ -113,7 +115,7 @@ namespace Terminal_IO.View
             {
                 var writeBuffer = CryptographicBuffer.ConvertStringToBinary(CharacteristicWriteValue.Text,
                     BinaryStringEncoding.Utf8);
-
+                datatype = DataType.Utf8;
                 var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writeBuffer);
             }
             else
@@ -132,7 +134,7 @@ namespace Terminal_IO.View
                     var writer = new DataWriter();
                     writer.ByteOrder = ByteOrder.LittleEndian;
                     writer.WriteInt32(readValue);
-
+                    datatype = DataType.Int32;
                     var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
                 }
                 else
@@ -240,7 +242,7 @@ namespace Terminal_IO.View
         {
             // BT_Code: An Indicate or Notify reported that the value has changed.
             // Display the new value with a timestamp.
-            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue);
+            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue,DataType.UnkownType);
             var message = $"Value at {DateTime.Now:hh:mm:ss.FFF}: {newValue}";
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
                 () => CharacteristicLatestValue.Text = message);

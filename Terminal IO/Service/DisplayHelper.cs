@@ -64,6 +64,13 @@ namespace Terminal_IO.Service
         }
     }
 
+    public enum DataType
+    {
+        Int32,
+        Utf8,
+        UnkownType
+    }
+
     public enum GattNativeServiceUuid : ushort
     {
         None = 0,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -35,8 +36,8 @@ namespace Terminal_IO.View
         {
             this.InitializeComponent();
         }
-
        
+
         private async void PairButton_Click(object sender, RoutedEventArgs e)
         {
             var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;

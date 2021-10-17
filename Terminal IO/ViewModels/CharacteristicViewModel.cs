@@ -2,6 +2,7 @@
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace Terminal_IO.ViewModels
                     // In this case, we'll just encode the whole thing to a string to make it easy to print out.
                 }
             }
-
+            Debug.WriteLine(Characteristic.PresentationFormats.Count);
             var result = await Characteristic.GetDescriptorsAsync(BluetoothCacheMode.Uncached);
             if (result.Status != GattCommunicationStatus.Success)
             {
@@ -74,7 +75,7 @@ namespace Terminal_IO.ViewModels
         }
 
 
-        public string FormatValueByPresentation(IBuffer buffer)
+        public string FormatValueByPresentation(IBuffer buffer, DataType dataType)
         {
             // BT_Code: For the purpose of this sample, this function converts only UInt32 and
             // UTF-8 buffers to readable text. It can be extended to support other formats if your app needs them.
@@ -85,6 +86,10 @@ namespace Terminal_IO.ViewModels
                 if (presentationFormat.FormatType == GattPresentationFormatTypes.UInt32 && data.Length >= 4)
                 {
                     return BitConverter.ToInt32(data, 0).ToString();
+                }
+                else if (presentationFormat.FormatType == GattPresentationFormatTypes.UInt16 && data.Length >= 4)
+                {
+                    return BitConverter.ToInt16(data, 0).ToString();
                 }
                 else if (presentationFormat.FormatType == GattPresentationFormatTypes.Utf8)
                 {
@@ -138,29 +143,36 @@ namespace Terminal_IO.ViewModels
                 // No guarantees on if a characteristic is registered for notifications.
                 else if (Characteristic != null)
                 {
+                    /*
                     // This is our custom calc service Result UUID. Format it like an Int
                     if (Characteristic.Uuid.Equals(Constants.ResultCharacteristicUuid))
                     {
+                        
+                    }
+                    */
+                    //
+                    if (dataType == DataType.Int32)
+                    {
                         return BitConverter.ToInt32(data, 0).ToString();
                     }
-                }
-                else
-                {
-                    try
+                    else if (dataType == DataType.Utf8)
                     {
-                        return "Unknown format: " + Encoding.UTF8.GetString(data);
+                        return Encoding.UTF8.GetString(data);
                     }
-                    catch (ArgumentException)
+                    else
                     {
                         return "Unknown format";
-                    }
+                    }                  
+                }
+                else
+                {                  
+                    return "Unknown format";
                 }
             }
             else
             {
                 return "Empty data received";
             }
-            return "Unknown format";
         }
 
         /// <summary>
@@ -177,10 +189,12 @@ namespace Terminal_IO.ViewModels
             const byte heartRateValueFormat = 0x01;
 
             byte flags = data[0];
-            bool isHeartRateValueSizeLong = ((flags & heartRateValueFormat) != 0);
+            bool isHeartRateValueSizeLong = (flags & heartRateValueFormat) != 0;
+
 
             if (isHeartRateValueSizeLong)
             {
+
                 return BitConverter.ToUInt16(data, 1);
             }
             else
