@@ -66,7 +66,7 @@ namespace Terminal_IO.View
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(CharacteristicsPage));
+            this.Frame.Navigate(typeof(CharacteristicPage));
         }
     }
 }

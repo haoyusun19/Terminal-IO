@@ -144,7 +144,6 @@ namespace Terminal_IO.ViewModels
                 //deviceWatcher.Removed -= DeviceWatcher_Removed;
                 //deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
                 //deviceWatcher.Stopped -= DeviceWatcher_Stopped;
-                //KnownDevices.Clear();
                 // Stop the watcher.
                 deviceWatcher.Stop();
             }

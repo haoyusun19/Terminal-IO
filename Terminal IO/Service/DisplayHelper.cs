@@ -68,6 +68,7 @@ namespace Terminal_IO.Service
     {
         Int32,
         Utf8,
+        Bytes,
         UnkownType
     }
 

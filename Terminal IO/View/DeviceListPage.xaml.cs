@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Terminal_IO.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -40,14 +41,17 @@ namespace Terminal_IO.View
 
         private async void PairButton_Click(object sender, RoutedEventArgs e)
         {
+            
             var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
 
             // BT_Code: Pair the currently selected device.
             await bleDevice.DeviceInformation.Pairing.PairAsync();
+            
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            
             ViewModel.StopBleDeviceWatcher();
             // Save the selected device's ID for use in other scenarios.
             var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
@@ -64,7 +68,7 @@ namespace Terminal_IO.View
         }
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
-        {
+        {                         
             this.Frame.Navigate(typeof(ServicesPage));
         }
     }

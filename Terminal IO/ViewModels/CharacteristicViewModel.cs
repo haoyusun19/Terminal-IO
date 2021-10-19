@@ -38,6 +38,13 @@ namespace Terminal_IO.ViewModels
         }
 
         [Reactive]
+        public string CharacteristicLatestValue
+        {
+            get;
+            set;
+        }
+
+        [Reactive]
         public string CharacteristicName
         {
             get;
@@ -158,6 +165,15 @@ namespace Terminal_IO.ViewModels
                     else if (dataType == DataType.Utf8)
                     {
                         return Encoding.UTF8.GetString(data);
+                    }
+                    else if (dataType == DataType.Bytes)
+                    {
+                        string text = null;
+                        foreach(byte b in data)
+                        {
+                            text += b.ToString("X2") + " ";
+                        }
+                        return text;
                     }
                     else
                     {

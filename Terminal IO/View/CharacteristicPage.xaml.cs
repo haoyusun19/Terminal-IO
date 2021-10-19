@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -27,23 +28,22 @@ namespace Terminal_IO.View
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CharacteristicsPage : Page
+    public sealed partial class CharacteristicPage : Page
     {
         private bool subscribedForNotifications = false;
         private DataType datatype;
 
-        private CharacteristicViewModel registeredCharacteristic;
         private CharacteristicViewModel selectedCharacteristic;
 
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register(nameof(ViewModel), typeof(CharacteristicListViewModel), typeof(CharacteristicsPage), new PropertyMetadata(CharacteristicListViewModel.Instance));
+            DependencyProperty.Register(nameof(ViewModel), typeof(CharacteristicListViewModel), typeof(CharacteristicPage), new PropertyMetadata(CharacteristicListViewModel.Instance));
 
         public CharacteristicListViewModel ViewModel
         {
             get { return (CharacteristicListViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
-        public CharacteristicsPage()
+        public CharacteristicPage()
         {
             this.InitializeComponent();
         }
@@ -100,7 +100,7 @@ namespace Terminal_IO.View
             GattReadResult result = await selectedCharacteristic.Characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
             if (result.Status == GattCommunicationStatus.Success)
             {
-                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value,datatype);
+                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value, datatype);
                 NotifyUser($"Read result: {formattedResult}", NotifyType.StatusMessage);
             }
             else
@@ -117,6 +117,31 @@ namespace Terminal_IO.View
                     BinaryStringEncoding.Utf8);
                 datatype = DataType.Utf8;
                 var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writeBuffer);
+            }
+            else
+            {
+                NotifyUser("No data to write to device", NotifyType.ErrorMessage);
+            }
+        }
+
+        private async void CharacteristicWriteButtonByte_Click()
+        {
+            if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
+            {
+                var isValidValue = Byte.TryParse(CharacteristicWriteValue.Text, NumberStyles.HexNumber,
+                    null as IFormatProvider, out byte readValue);
+                if (isValidValue)
+                {
+                    var writer = new DataWriter();
+                    writer.ByteOrder = ByteOrder.LittleEndian;
+                    writer.WriteByte(readValue);
+                    datatype = DataType.Bytes;
+                    var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
+                }
+                else
+                {
+                    NotifyUser("Data to write has to be an byte in hexformat", NotifyType.ErrorMessage);
+                }
             }
             else
             {
@@ -221,8 +246,7 @@ namespace Terminal_IO.View
             ValueChangedSubscribeToggle.Content = "Unsubscribe from value changes";
             if (!subscribedForNotifications)
             {
-                registeredCharacteristic = selectedCharacteristic;
-                registeredCharacteristic.Characteristic.ValueChanged += Characteristic_ValueChanged;
+                selectedCharacteristic.Characteristic.ValueChanged += Characteristic_ValueChanged;
                 subscribedForNotifications = true;
             }
         }
@@ -232,8 +256,7 @@ namespace Terminal_IO.View
             ValueChangedSubscribeToggle.Content = "Subscribe to value changes";
             if (subscribedForNotifications)
             {
-                registeredCharacteristic.Characteristic.ValueChanged -= Characteristic_ValueChanged;
-                registeredCharacteristic = null;
+                selectedCharacteristic.Characteristic.ValueChanged -= Characteristic_ValueChanged;
                 subscribedForNotifications = false;
             }
         }
@@ -242,10 +265,15 @@ namespace Terminal_IO.View
         {
             // BT_Code: An Indicate or Notify reported that the value has changed.
             // Display the new value with a timestamp.
-            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue,DataType.UnkownType);
+            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue, DataType.UnkownType);
             var message = $"Value at {DateTime.Now:hh:mm:ss.FFF}: {newValue}";
+
+
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () => CharacteristicLatestValue.Text = message);
+                () => {
+                    selectedCharacteristic.CharacteristicLatestValue = message;
+                });
+
         }
 
         private void NotifyUser(string strMessage, NotifyType type)
@@ -275,7 +303,7 @@ namespace Terminal_IO.View
             }
 
             StatusBlock.Text = strMessage;
-           
+
             if (StatusBlock.Text != String.Empty)
             {
                 StatusBorder.Visibility = Visibility.Visible;
@@ -283,7 +311,7 @@ namespace Terminal_IO.View
             else
             {
                 StatusBorder.Visibility = Visibility.Collapsed;
-            }           
+            }
         }
 
         public enum NotifyType

@@ -19,6 +19,13 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppInstallerUri>https://partner.microsoft.com/en-us/dashboard/products/9NTJG03VMW6N/overview</AppInstallerUri>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -129,8 +136,8 @@
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\ServiceListViewModel.cs" />
     <Compile Include="ViewModels\ServiceViewModel.cs" />
-    <Compile Include="View\CharacteristicsPage.xaml.cs">
-      <DependentUpon>CharacteristicsPage.xaml</DependentUpon>
+    <Compile Include="View\CharacteristicPage.xaml.cs">
+      <DependentUpon>CharacteristicPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DeviceListPage.xaml.cs">
       <DependentUpon>DeviceListPage.xaml</DependentUpon>
@@ -217,7 +224,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\CharacteristicsPage.xaml">
+    <Page Include="View\CharacteristicPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
