@@ -149,6 +149,35 @@ namespace Terminal_IO.View
             }
         }
 
+        private async void CharacteristicWriteButtonByteArray_Click()
+        {          
+            if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
+            {
+                string[] bytes = CharacteristicWriteValue.Text.Split(' ');
+                var writer = new DataWriter();
+                foreach (var word in bytes)
+                {
+                    var isValidValue = Byte.TryParse(word, NumberStyles.HexNumber,
+                        null as IFormatProvider, out byte readValue);
+                    if (isValidValue)
+                    {                       
+                        writer.ByteOrder = ByteOrder.LittleEndian;
+                        writer.WriteByte(readValue);
+                        datatype = DataType.Bytes;                       
+                    }
+                    else
+                    {
+                        NotifyUser("Data to write has to be an byte in hexformat, like ff ff ff", NotifyType.ErrorMessage);
+                    }
+                }
+                var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
+            }
+            else
+            {
+                NotifyUser("No data to write to device", NotifyType.ErrorMessage);
+            }
+        }
+
         private async void CharacteristicWriteButtonInt_Click()
         {
             if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
@@ -265,7 +294,7 @@ namespace Terminal_IO.View
         {
             // BT_Code: An Indicate or Notify reported that the value has changed.
             // Display the new value with a timestamp.
-            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue, DataType.UnkownType);
+            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue, DataType.Bytes);
             var message = $"Value at {DateTime.Now:hh:mm:ss.FFF}: {newValue}";
 
 

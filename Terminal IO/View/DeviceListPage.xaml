@@ -17,7 +17,7 @@
                         Name: <Run Text="{x:Bind Name, Mode=OneWay}" FontWeight="Bold"/>
                     </TextBlock>
                     <TextBlock>
-                        IsPaired: <Run Text="{x:Bind IsPaired, Mode=OneWay}"/>
+                        IsPaired: <Run Text="{x:Bind IsPaired, Mode=OneWay}"/>, IsConnected: <Run Text="{x:Bind IsConnected, Mode=OneWay}"/>, IsConnectable:<Run Text="{x:Bind IsConnectable, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
@@ -40,7 +40,7 @@
                       BorderBrush="AntiqueWhite" BorderThickness="1">
             <ListView x:Name="ResultsListView"
                       ItemTemplate="{StaticResource ResultsListViewTemplate}"
-                      ItemsSource="{x:Bind ViewModel.KnownDevices, Mode=OneWay}"/>
+                      ItemsSource="{x:Bind KnownDevices, Mode=OneWay}"/>
         </ScrollViewer>
     </Grid>
 </Page>

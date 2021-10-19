@@ -132,7 +132,6 @@
     <Compile Include="Service\DisplayHelper.cs" />
     <Compile Include="ViewModels\CharacteristicListViewModel.cs" />
     <Compile Include="ViewModels\CharacteristicViewModel.cs" />
-    <Compile Include="ViewModels\DeviceListViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\ServiceListViewModel.cs" />
     <Compile Include="ViewModels\ServiceViewModel.cs" />
