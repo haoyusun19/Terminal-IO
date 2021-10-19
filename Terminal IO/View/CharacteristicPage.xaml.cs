@@ -66,14 +66,16 @@ namespace Terminal_IO.View
         private async void CharacteristicList_SelectionChanged()
         {
             selectedCharacteristic = ResultsListView.SelectedItem as CharacteristicViewModel;
-            var result = await selectedCharacteristic.PrepareToWork();
-            if (result != true)
+            if (selectedCharacteristic != null)
             {
-                NotifyUser("Descriptor read failed.", NotifyType.ErrorMessage);
-            }
-
-            // Enable/disable operations based on the GattCharacteristicProperties.
-            EnableCharacteristicPanels(selectedCharacteristic.Characteristic.CharacteristicProperties);
+                var result = await selectedCharacteristic.PrepareToWork();
+                if (result != true)
+                {
+                    NotifyUser("Descriptor read failed.", NotifyType.ErrorMessage);
+                }
+                // Enable/disable operations based on the GattCharacteristicProperties.
+                EnableCharacteristicPanels(selectedCharacteristic.Characteristic.CharacteristicProperties);
+            }          
         }
 
         private void SetVisibility(UIElement element, bool visible)
