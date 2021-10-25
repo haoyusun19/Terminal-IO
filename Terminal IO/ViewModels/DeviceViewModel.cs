@@ -16,9 +16,7 @@ namespace Terminal_IO.ViewModels
             DeviceInformation = deviceInfoIn;
             Id = DeviceInformation.Id;
             Name = DeviceInformation.Name;
-            IsPaired = DeviceInformation.Pairing.IsPaired;
-            IsConnected = (bool?)DeviceInformation.Properties["System.Devices.Aep.IsConnected"] == true;
-            IsConnected = (bool?)DeviceInformation.Properties["System.Devices.Aep.Bluetooth.Le.IsConnectable"] == true;
+            IsPaired = DeviceInformation.Pairing.IsPaired;         
             IsUnPaired = !DeviceInformation.Pairing.IsPaired;           
         }
 
@@ -44,21 +42,7 @@ namespace Terminal_IO.ViewModels
             get;
             set;
         }
-
-        [Reactive]
-        public bool IsConnected
-        {
-            get;
-            set;
-        }
-
-        [Reactive]
-        public bool IsConnectable
-        {
-            get;
-            set;
-        }
-
+      
         public bool IsUnPaired
         {
             get;
@@ -70,9 +54,7 @@ namespace Terminal_IO.ViewModels
             DeviceInformation.Update(deviceInfoUpdate);
             Id = DeviceInformation.Id;
             Name = DeviceInformation.Name;
-            IsPaired = DeviceInformation.Pairing.IsPaired;
-            IsConnected = (bool?)DeviceInformation.Properties["System.Devices.Aep.IsConnected"] == true;
-            IsConnected = (bool?)DeviceInformation.Properties["System.Devices.Aep.Bluetooth.Le.IsConnectable"] == true;
+            IsPaired = DeviceInformation.Pairing.IsPaired;          
             IsUnPaired = !DeviceInformation.Pairing.IsPaired;
         }
     }

@@ -45,7 +45,7 @@ namespace Terminal_IO.ViewModels
                 // BT_Code: GetGattServicesAsync returns a list of all the supported services of the device (even if it's not paired to the system).
                 // If the services supported by the device are expected to change during BT usage, subscribe to the GattServicesChanged event.
                 GattDeviceServicesResult result = await BluetoothLeDevice.GetGattServicesAsync(BluetoothCacheMode.Uncached);
-
+                Debug.WriteLine(result.Status);
                 if (result.Status == GattCommunicationStatus.Success)
                 {
                     var services = result.Services;

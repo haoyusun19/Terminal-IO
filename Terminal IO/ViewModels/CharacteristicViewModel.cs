@@ -16,12 +16,7 @@ namespace Terminal_IO.ViewModels
 {
     public class CharacteristicViewModel : ReactiveObject
     {
-        #region Error Codes
-        readonly int E_BLUETOOTH_ATT_WRITE_NOT_PERMITTED = unchecked((int)0x80650003);
-        readonly int E_BLUETOOTH_ATT_INVALID_PDU = unchecked((int)0x80650004);
-        readonly int E_ACCESSDENIED = unchecked((int)0x80070005);
-        readonly int E_DEVICE_NOT_AVAILABLE = unchecked((int)0x800710df); // HRESULT_FROM_WIN32(ERROR_DEVICE_NOT_AVAILABLE)
-        #endregion
+        
 
         public CharacteristicViewModel(GattCharacteristic gattCharacteristic)
         {
@@ -218,32 +213,6 @@ namespace Terminal_IO.ViewModels
                 return data[1];
             }
         }
-
-
-        public async Task<bool> WriteBufferToSelectedCharacteristicAsync(IBuffer buffer)
-        {
-            try
-            {
-                // BT_Code: Writes the value from the buffer to the characteristic.
-                var result = await Characteristic.WriteValueWithResultAsync(buffer);
-
-                if (result.Status == GattCommunicationStatus.Success)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex) when (ex.HResult == E_BLUETOOTH_ATT_INVALID_PDU)
-            {
-                return false;
-            }
-            catch (Exception ex) when (ex.HResult == E_BLUETOOTH_ATT_WRITE_NOT_PERMITTED || ex.HResult == E_ACCESSDENIED)
-            {
-                return false;
-            }
-        }
+       
     }
 }

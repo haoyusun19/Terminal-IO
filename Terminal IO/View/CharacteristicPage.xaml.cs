@@ -30,6 +30,13 @@ namespace Terminal_IO.View
     /// </summary>
     public sealed partial class CharacteristicPage : Page
     {
+        #region Error Codes
+        readonly int E_BLUETOOTH_ATT_WRITE_NOT_PERMITTED = unchecked((int)0x80650003);
+        readonly int E_BLUETOOTH_ATT_INVALID_PDU = unchecked((int)0x80650004);
+        readonly int E_ACCESSDENIED = unchecked((int)0x80070005);
+        readonly int E_DEVICE_NOT_AVAILABLE = unchecked((int)0x800710df); // HRESULT_FROM_WIN32(ERROR_DEVICE_NOT_AVAILABLE)
+        #endregion
+
         private bool subscribedForNotifications = false;
         private DataType datatype;
 
@@ -111,14 +118,14 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void CharacteristicWriteButton_Click()
+        private void CharacteristicWriteButton_Click()
         {
             if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
             {
                 var writeBuffer = CryptographicBuffer.ConvertStringToBinary(CharacteristicWriteValue.Text,
                     BinaryStringEncoding.Utf8);
                 datatype = DataType.Utf8;
-                var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writeBuffer);
+                WriteBufferToSelectedCharacteristicAsync(writeBuffer);
             }
             else
             {
@@ -126,7 +133,7 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void CharacteristicWriteButtonByte_Click()
+        private void CharacteristicWriteButtonByte_Click()
         {
             if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
             {
@@ -138,7 +145,7 @@ namespace Terminal_IO.View
                     writer.ByteOrder = ByteOrder.LittleEndian;
                     writer.WriteByte(readValue);
                     datatype = DataType.Bytes;
-                    var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
+                    WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
                 }
                 else
                 {
@@ -151,7 +158,7 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void CharacteristicWriteButtonByteArray_Click()
+        private void CharacteristicWriteButtonByteArray_Click()
         {          
             if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
             {
@@ -172,7 +179,7 @@ namespace Terminal_IO.View
                         NotifyUser("Data to write has to be an byte in hexformat, like ff ff ff", NotifyType.ErrorMessage);
                     }
                 }
-                var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
+                WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
             }
             else
             {
@@ -180,7 +187,7 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void CharacteristicWriteButtonInt_Click()
+        private void CharacteristicWriteButtonInt_Click()
         {
             if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
             {
@@ -191,7 +198,7 @@ namespace Terminal_IO.View
                     writer.ByteOrder = ByteOrder.LittleEndian;
                     writer.WriteInt32(readValue);
                     datatype = DataType.Int32;
-                    var writeSuccessful = await selectedCharacteristic.WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
+                    WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
                 }
                 else
                 {
@@ -201,6 +208,32 @@ namespace Terminal_IO.View
             else
             {
                 NotifyUser("No data to write to device", NotifyType.ErrorMessage);
+            }
+        }
+
+        private async void WriteBufferToSelectedCharacteristicAsync(IBuffer buffer)
+        {
+            try
+            {
+                // BT_Code: Writes the value from the buffer to the characteristic.
+                var result = await selectedCharacteristic.Characteristic.WriteValueWithResultAsync(buffer);
+
+                if (result.Status == GattCommunicationStatus.Success)
+                {
+                    NotifyUser("Successfully wrote value to device", NotifyType.StatusMessage);
+                }
+                else
+                {
+                    NotifyUser($"Write failed: {result.Status}", NotifyType.ErrorMessage);
+                }
+            }
+            catch (Exception ex) when (ex.HResult == E_BLUETOOTH_ATT_INVALID_PDU)
+            {
+                NotifyUser(ex.Message, NotifyType.ErrorMessage);
+            }
+            catch (Exception ex) when (ex.HResult == E_BLUETOOTH_ATT_WRITE_NOT_PERMITTED || ex.HResult == E_ACCESSDENIED)
+            {
+                NotifyUser(ex.Message, NotifyType.ErrorMessage);
             }
         }
 
