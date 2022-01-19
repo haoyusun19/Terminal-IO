@@ -42,6 +42,22 @@ namespace Terminal_IO.Service
 
             else
             {
+                if (characteristic.Uuid==new Guid("00000002-0000-1000-8000-008025000000"))
+                {
+                    return "UART Data TX Characteristics";
+                }
+                if (characteristic.Uuid == new Guid("00000001-0000-1000-8000-008025000000"))
+                {
+                    return "UART Data RX Characteristics";
+                }
+                if (characteristic.Uuid == new Guid("00000004-0000-1000-8000-008025000000"))
+                {
+                    return "UART Credits TX Characteristics";
+                }
+                if (characteristic.Uuid == new Guid("00000003-0000-1000-8000-008025000000"))
+                {
+                    return "UART Credits RX Characteristics";
+                }
                 return "Custom Characteristic: " + characteristic.Uuid;
             }
         }
@@ -95,7 +111,8 @@ namespace Terminal_IO.Service
         RunningSpeedandCadence = 0x1814,
         ScanParameters = 0x1813,
         TxPower = 0x1804,
-        SimpleKeyService = 0xFFE0
+        SimpleKeyService = 0xFFE0, 
+        TerminalIO = 0xFEFB
     }
 
     public enum GattNativeCharacteristicUuid : ushort

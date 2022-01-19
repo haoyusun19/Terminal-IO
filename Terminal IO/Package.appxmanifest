@@ -9,7 +9,7 @@
   <Identity
     Name="14403HaoyuSun.TerminalIO"
     Publisher="CN=C0751C24-8FE6-4AD2-A228-A865BD5E0AF9"
-    Version="1.0.14.0" />
+    Version="1.0.15.0" />
 
   <mp:PhoneIdentity PhoneProductId="64a6c5e5-a402-4c27-a332-c5598e59995e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
