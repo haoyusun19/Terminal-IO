@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="14403HaoyuSun.TerminalIO"
+    Name="14403HaoyuSun.TerminalIOTelit"
     Publisher="CN=C0751C24-8FE6-4AD2-A228-A865BD5E0AF9"
-    Version="1.0.15.0" />
+    Version="1.0.21.0" />
 
-  <mp:PhoneIdentity PhoneProductId="64a6c5e5-a402-4c27-a332-c5598e59995e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="1a0a1867-5a87-4314-9954-8b3e5ac0c780" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Terminal I/O</DisplayName>
+    <DisplayName>Terminal IO Telit</DisplayName>
     <PublisherDisplayName>Haoyu Sun</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="Terminal_IO.App">
       <uap:VisualElements
-        DisplayName="Terminal I/O"
+        DisplayName="Terminal IO Telit"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Terminal IO"

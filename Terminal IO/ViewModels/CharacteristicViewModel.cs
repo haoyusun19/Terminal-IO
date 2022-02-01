@@ -142,6 +142,48 @@ namespace Terminal_IO.ViewModels
                 {
                     return BitConverter.ToInt32(data, 0).ToString();
                 }
+                else if (Characteristic.Uuid.Equals(new Guid("00002a50-0000-1000-8000-00805f9b34fb")))
+                {
+                    string text = null;
+                    text += "0x" + data[4].ToString("X2") + data[3].ToString("X2");
+                    return text;
+                }
+                else if (Characteristic.Uuid.Equals(new Guid("00000002-0000-1000-8000-008025000000")))
+                {
+                    string text = null;
+                    foreach (byte b in data)
+                    {
+                        text += b.ToString("X2") + " ";
+                    }
+                    return text;
+                }
+                else if (Characteristic.Uuid.Equals(new Guid("00000001-0000-1000-8000-008025000000")))
+                {
+                    string text = null;
+                    foreach (byte b in data)
+                    {
+                        text += b.ToString("X2") + " ";
+                    }
+                    return text;
+                }
+                else if (Characteristic.Uuid.Equals(new Guid("00000003-0000-1000-8000-008025000000")))
+                {
+                    string text = null;
+                    foreach (byte b in data)
+                    {
+                        text += b.ToString("X2") + " ";
+                    }
+                    return text;
+                }
+                else if (Characteristic.Uuid.Equals(new Guid("00000004-0000-1000-8000-008025000000")))
+                {
+                    string text = null;
+                    foreach (byte b in data)
+                    {
+                        text += b.ToString("X2") + " ";
+                    }
+                    return text;
+                }
                 // No guarantees on if a characteristic is registered for notifications.
                 else if (Characteristic != null)
                 {
@@ -164,7 +206,20 @@ namespace Terminal_IO.ViewModels
                     else if (dataType == DataType.Bytes)
                     {
                         string text = null;
-                        foreach(byte b in data)
+                        /*
+                        if (data.Length > 5)
+                        {
+                            text += data[4].ToString("X2") + " " + data[3].ToString("X2");
+                        }
+                        else
+                        {
+                            foreach (byte b in data)
+                            {
+                                text += b.ToString("X2") + " ";
+                            }
+                        }
+                        */
+                        foreach (byte b in data)
                         {
                             text += b.ToString("X2") + " ";
                         }

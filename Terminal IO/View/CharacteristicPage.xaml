@@ -44,7 +44,9 @@
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="CharacteristicReadButton" Content="Read Value" Click="{x:Bind CharacteristicReadButton_Click}"
                         Visibility="Collapsed" Margin="0,10,10,0"/>
-                    <Button x:Name="ValueChangedSubscribeToggle" Content="Subscribe to value changes" Click="{x:Bind ValueChangedSubscribeToggle_Click}"
+                    <Button x:Name="ActivateNotification" Content="Activate the Notification" Click="{x:Bind ActivateNotification_Click}"
+                        Visibility="Collapsed" Margin="0,10,10,0"/>
+                    <Button x:Name="ActivateIndication" Content="Activate the Indication" Click="{x:Bind ActivateIndication_Click}"
                         Visibility="Collapsed" Margin="0,10,10,0"/>
                 </StackPanel>
                 <StackPanel x:Name="CharacteristicWritePanel" Margin="0,10,0,0" Visibility="Collapsed">

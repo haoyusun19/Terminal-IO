@@ -38,6 +38,7 @@ namespace Terminal_IO.View
         #endregion
 
         private bool subscribedForNotifications = false;
+        private bool subscribedForIndications = false;
         private DataType datatype;
 
         private CharacteristicViewModel selectedCharacteristic;
@@ -80,6 +81,7 @@ namespace Terminal_IO.View
                 {
                     NotifyUser("Descriptor read failed.", NotifyType.ErrorMessage);
                 }
+                NotifyUser("UUID of the selected Characteristic " + selectedCharacteristic.Characteristic.Uuid.ToString(), NotifyType.StatusMessage);
                 // Enable/disable operations based on the GattCharacteristicProperties.
                 EnableCharacteristicPanels(selectedCharacteristic.Characteristic.CharacteristicProperties);
             }          
@@ -99,8 +101,8 @@ namespace Terminal_IO.View
                 properties.HasFlag(GattCharacteristicProperties.Write) ||
                 properties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse));
             CharacteristicWriteValue.Text = "";
-            SetVisibility(ValueChangedSubscribeToggle, properties.HasFlag(GattCharacteristicProperties.Indicate) ||
-                                                       properties.HasFlag(GattCharacteristicProperties.Notify));
+            SetVisibility(ActivateNotification, properties.HasFlag(GattCharacteristicProperties.Notify));
+            SetVisibility(ActivateIndication, properties.HasFlag(GattCharacteristicProperties.Indicate));
         }
 
         private async void CharacteristicReadButton_Click()
@@ -237,22 +239,75 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void ValueChangedSubscribeToggle_Click()
+        private async void ActivateNotification_Click()
         {
             if (!subscribedForNotifications)
             {
                 // initialize status
                 GattCommunicationStatus status = GattCommunicationStatus.Unreachable;
-                var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.None;
-                if (selectedCharacteristic.Characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Indicate))
+                var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.Notify;
+                
+                try
                 {
-                    cccdValue = GattClientCharacteristicConfigurationDescriptorValue.Indicate;
-                }
+                    // BT_Code: Must write the CCCD in order for server to send indications.
+                    // We receive them in the ValueChanged event handler.
+                    status = await selectedCharacteristic.Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
 
-                else if (selectedCharacteristic.Characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
-                {
-                    cccdValue = GattClientCharacteristicConfigurationDescriptorValue.Notify;
+                    if (status == GattCommunicationStatus.Success)
+                    {
+                        AddValueChangedHandler();
+                        subscribedForNotifications = true;
+                        ActivateNotification.Content = "Deactivate the Notification";
+                        NotifyUser("Successfully subscribed for value changes", NotifyType.StatusMessage);
+                    }
+                    else
+                    {
+                        NotifyUser($"Error registering for value changes: {status}", NotifyType.ErrorMessage);
+                    }
                 }
+                catch (UnauthorizedAccessException ex)
+                {
+                    // This usually happens when a device reports that it support indicate, but it actually doesn't.
+                    NotifyUser(ex.Message, NotifyType.ErrorMessage);
+                }
+            }
+            else
+            {
+                try
+                {
+                    // BT_Code: Must write the CCCD in order for server to send notifications.
+                    // We receive them in the ValueChanged event handler.
+                    // Note that this sample configures either Indicate or Notify, but not both.
+                    var result = await
+                            selectedCharacteristic.Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                                GattClientCharacteristicConfigurationDescriptorValue.None);
+                    if (result == GattCommunicationStatus.Success)
+                    {                       
+                        RemoveValueChangedHandler();
+                        subscribedForNotifications = false;
+                        ActivateNotification.Content = "Activate the Notification";
+                        NotifyUser("Successfully un-registered for notifications", NotifyType.StatusMessage);
+                    }
+                    else
+                    {
+                        NotifyUser($"Error un-registering for notifications: {result}", NotifyType.ErrorMessage);
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    // This usually happens when a device reports that it support notify, but it actually doesn't.
+                    NotifyUser(ex.Message, NotifyType.ErrorMessage);
+                }
+            }
+        }
+
+        private async void ActivateIndication_Click()
+        {
+            if (!subscribedForIndications)
+            {
+                // initialize status
+                GattCommunicationStatus status = GattCommunicationStatus.Unreachable;
+                var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.Indicate;
 
                 try
                 {
@@ -263,6 +318,8 @@ namespace Terminal_IO.View
                     if (status == GattCommunicationStatus.Success)
                     {
                         AddValueChangedHandler();
+                        subscribedForIndications = true;
+                        ActivateIndication.Content = "Deactivate the Indication";
                         NotifyUser("Successfully subscribed for value changes", NotifyType.StatusMessage);
                     }
                     else
@@ -288,13 +345,14 @@ namespace Terminal_IO.View
                                 GattClientCharacteristicConfigurationDescriptorValue.None);
                     if (result == GattCommunicationStatus.Success)
                     {
-                        subscribedForNotifications = false;
                         RemoveValueChangedHandler();
-                        NotifyUser("Successfully un-registered for notifications", NotifyType.StatusMessage);
+                        subscribedForIndications = false;
+                        ActivateIndication.Content = "Activate the Indication";
+                        NotifyUser("Successfully un-registered for indications", NotifyType.StatusMessage);
                     }
                     else
                     {
-                        NotifyUser($"Error un-registering for notifications: {result}", NotifyType.ErrorMessage);
+                        NotifyUser($"Error un-registering for indications: {result}", NotifyType.ErrorMessage);
                     }
                 }
                 catch (UnauthorizedAccessException ex)
@@ -307,21 +365,17 @@ namespace Terminal_IO.View
 
         private void AddValueChangedHandler()
         {
-            ValueChangedSubscribeToggle.Content = "Unsubscribe from value changes";
             if (!subscribedForNotifications)
             {
-                selectedCharacteristic.Characteristic.ValueChanged += Characteristic_ValueChanged;
-                subscribedForNotifications = true;
+                selectedCharacteristic.Characteristic.ValueChanged += Characteristic_ValueChanged;               
             }
         }
 
         private void RemoveValueChangedHandler()
         {
-            ValueChangedSubscribeToggle.Content = "Subscribe to value changes";
             if (subscribedForNotifications)
             {
                 selectedCharacteristic.Characteristic.ValueChanged -= Characteristic_ValueChanged;
-                subscribedForNotifications = false;
             }
         }
 
@@ -337,7 +391,6 @@ namespace Terminal_IO.View
                 () => {
                     selectedCharacteristic.CharacteristicLatestValue = message;
                 });
-
         }
 
         private void NotifyUser(string strMessage, NotifyType type)
