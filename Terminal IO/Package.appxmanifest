@@ -9,7 +9,7 @@
   <Identity
     Name="14403HaoyuSun.TerminalIOTelit"
     Publisher="CN=C0751C24-8FE6-4AD2-A228-A865BD5E0AF9"
-    Version="1.0.21.0" />
+    Version="1.0.22.0" />
 
   <mp:PhoneIdentity PhoneProductId="1a0a1867-5a87-4314-9954-8b3e5ac0c780" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

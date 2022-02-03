@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -39,7 +40,6 @@ namespace Terminal_IO.View
 
         private bool subscribedForNotifications = false;
         private bool subscribedForIndications = false;
-        private DataType datatype;
 
         private CharacteristicViewModel selectedCharacteristic;
 
@@ -71,17 +71,11 @@ namespace Terminal_IO.View
             this.Frame.Navigate(typeof(ServicesPage));
         }
 
-        private async void CharacteristicList_SelectionChanged()
+        private void CharacteristicList_SelectionChanged()
         {
             selectedCharacteristic = ResultsListView.SelectedItem as CharacteristicViewModel;
             if (selectedCharacteristic != null)
-            {
-                var result = await selectedCharacteristic.PrepareToWork();
-                if (result != true)
-                {
-                    NotifyUser("Descriptor read failed.", NotifyType.ErrorMessage);
-                }
-                NotifyUser("UUID of the selected Characteristic " + selectedCharacteristic.Characteristic.Uuid.ToString(), NotifyType.StatusMessage);
+            {                               
                 // Enable/disable operations based on the GattCharacteristicProperties.
                 EnableCharacteristicPanels(selectedCharacteristic.Characteristic.CharacteristicProperties);
             }          
@@ -111,7 +105,7 @@ namespace Terminal_IO.View
             GattReadResult result = await selectedCharacteristic.Characteristic.ReadValueAsync(BluetoothCacheMode.Uncached);
             if (result.Status == GattCommunicationStatus.Success)
             {
-                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value, datatype);
+                string formattedResult = selectedCharacteristic.FormatValueByPresentation(result.Value);
                 NotifyUser($"Read result: {formattedResult}", NotifyType.StatusMessage);
             }
             else
@@ -126,7 +120,6 @@ namespace Terminal_IO.View
             {
                 var writeBuffer = CryptographicBuffer.ConvertStringToBinary(CharacteristicWriteValue.Text,
                     BinaryStringEncoding.Utf8);
-                datatype = DataType.Utf8;
                 WriteBufferToSelectedCharacteristicAsync(writeBuffer);
             }
             else
@@ -146,7 +139,6 @@ namespace Terminal_IO.View
                     var writer = new DataWriter();
                     writer.ByteOrder = ByteOrder.LittleEndian;
                     writer.WriteByte(readValue);
-                    datatype = DataType.Bytes;
                     WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
                 }
                 else
@@ -160,59 +152,7 @@ namespace Terminal_IO.View
             }
         }
 
-        private void CharacteristicWriteButtonByteArray_Click()
-        {          
-            if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
-            {
-                string[] bytes = CharacteristicWriteValue.Text.Split(' ');
-                var writer = new DataWriter();
-                foreach (var word in bytes)
-                {
-                    var isValidValue = Byte.TryParse(word, NumberStyles.HexNumber,
-                        null as IFormatProvider, out byte readValue);
-                    if (isValidValue)
-                    {                       
-                        writer.ByteOrder = ByteOrder.LittleEndian;
-                        writer.WriteByte(readValue);
-                        datatype = DataType.Bytes;                       
-                    }
-                    else
-                    {
-                        NotifyUser("Data to write has to be an byte in hexformat, like ff ff ff", NotifyType.ErrorMessage);
-                    }
-                }
-                WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
-            }
-            else
-            {
-                NotifyUser("No data to write to device", NotifyType.ErrorMessage);
-            }
-        }
-
-        private void CharacteristicWriteButtonInt_Click()
-        {
-            if (!String.IsNullOrEmpty(CharacteristicWriteValue.Text))
-            {
-                var isValidValue = Int32.TryParse(CharacteristicWriteValue.Text, out int readValue);
-                if (isValidValue)
-                {
-                    var writer = new DataWriter();
-                    writer.ByteOrder = ByteOrder.LittleEndian;
-                    writer.WriteInt32(readValue);
-                    datatype = DataType.Int32;
-                    WriteBufferToSelectedCharacteristicAsync(writer.DetachBuffer());
-                }
-                else
-                {
-                    NotifyUser("Data to write has to be an int32", NotifyType.ErrorMessage);
-                }
-            }
-            else
-            {
-                NotifyUser("No data to write to device", NotifyType.ErrorMessage);
-            }
-        }
-
+        
         private async void WriteBufferToSelectedCharacteristicAsync(IBuffer buffer)
         {
             try
@@ -379,18 +319,12 @@ namespace Terminal_IO.View
             }
         }
 
-        private async void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        private void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             // BT_Code: An Indicate or Notify reported that the value has changed.
             // Display the new value with a timestamp.
-            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue, DataType.Bytes);
-            var message = $"Value at {DateTime.Now:hh:mm:ss.FFF}: {newValue}";
-
-
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-                () => {
-                    selectedCharacteristic.CharacteristicLatestValue = message;
-                });
+            var newValue = selectedCharacteristic.FormatValueByPresentation(args.CharacteristicValue);       
+            NotifyUser(newValue, NotifyType.StatusMessage);
         }
 
         private void NotifyUser(string strMessage, NotifyType type)
