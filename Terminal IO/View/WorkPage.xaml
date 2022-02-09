@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="Terminal_IO.View.WorkPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Terminal_IO.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="12,10,12,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,10">
+            <Button Name="BackButton"  Content="Back to device page" Click="PreviousPageButton_Click" Margin="0,0,10,0"/>
+        </StackPanel>
+        <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="0,10,0,0"
+                      BorderBrush="AntiqueWhite" BorderThickness="1">
+            <StackPanel x:Name="CharacteristicWritePanel" Margin="0,10,0,0">
+                <TextBox x:Name="CharacteristicWriteValue" PlaceholderText="Enter text/number to send"/>
+                <Button Content="Write Value as UTF-8" Click="{x:Bind CharacteristicWriteButton_Click}" Margin="0,10,0,0"/>
+                <TextBlock Text="Sended Text from PC to BM+S50: "/>
+                <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                    <TextBlock x:Name="SendedText" FontWeight="Bold" TextWrapping="Wrap"/>
+                </ScrollViewer>
+                <TextBlock Text="Received Text from BM+S50: "/>
+                <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                    <TextBlock x:Name="ReceivedText" FontWeight="Bold" TextWrapping="Wrap"/>
+                </ScrollViewer>
+                <TextBlock Text="The number of UART data, that PC shall send to BM+S50: "/>
+                <TextBlock x:Name="NumerOfData" FontWeight="Bold" TextWrapping="Wrap"/>
+            </StackPanel>
+        </ScrollViewer>
+        <StackPanel x:Name="StatusPanel" Grid.Row="2">
+            <TextBlock x:Name="StatusLabel" Margin="10,0,0,10" TextWrapping="Wrap"/>
+        </StackPanel>
+    </Grid>
+</Page>

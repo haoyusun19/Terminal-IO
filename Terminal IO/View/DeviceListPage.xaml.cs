@@ -40,7 +40,7 @@ namespace Terminal_IO.View
             string[] requestedProperties = { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected", "System.Devices.Aep.Bluetooth.Le.IsConnectable" };
 
             // BT_Code: Example showing paired and non-paired in a single query.
-            string aqsAllBluetoothLEDevices = "(System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\")";
+            string aqsAllBluetoothLEDevices = "(System.Devices.Aep.ProtocolId:=\"{bb7bb05e-5972-42b5-94fc-76eaa7084d49}\" AND System.ItemNameDisplay:~~\"" + "BM+S50" + "\")";
 
             deviceWatcher =
                     DeviceInformation.CreateWatcher(
@@ -157,8 +157,7 @@ namespace Terminal_IO.View
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            
+        {          
             StopBleDeviceWatcher();
             // Save the selected device's ID for use in other scenarios.
             var bleDevice = ResultsListView.SelectedItem as DeviceViewModel;
@@ -176,7 +175,7 @@ namespace Terminal_IO.View
 
         private void NextPageButton_Click(object sender, RoutedEventArgs e)
         {                         
-            this.Frame.Navigate(typeof(ServicesPage));
+            this.Frame.Navigate(typeof(WorkPage));
         }
     }
 }

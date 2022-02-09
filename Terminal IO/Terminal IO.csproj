@@ -128,21 +128,13 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\Constants.cs" />
-    <Compile Include="Service\DisplayHelper.cs" />
-    <Compile Include="ViewModels\CharacteristicListViewModel.cs" />
-    <Compile Include="ViewModels\CharacteristicViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
-    <Compile Include="ViewModels\ServiceListViewModel.cs" />
-    <Compile Include="ViewModels\ServiceViewModel.cs" />
-    <Compile Include="View\CharacteristicPage.xaml.cs">
-      <DependentUpon>CharacteristicPage.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Service\InitialService.cs" />
     <Compile Include="View\DeviceListPage.xaml.cs">
       <DependentUpon>DeviceListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ServicesPage.xaml.cs">
-      <DependentUpon>ServicesPage.xaml</DependentUpon>
+    <Compile Include="View\WorkPage.xaml.cs">
+      <DependentUpon>WorkPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -223,15 +215,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="View\CharacteristicPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\DeviceListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ServicesPage.xaml">
+    <Page Include="View\WorkPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
