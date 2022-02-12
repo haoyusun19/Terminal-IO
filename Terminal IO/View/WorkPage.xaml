@@ -21,7 +21,7 @@
                       BorderBrush="AntiqueWhite" BorderThickness="1">
             <StackPanel x:Name="CharacteristicWritePanel" Margin="0,10,0,0">
                 <TextBox x:Name="CharacteristicWriteValue" PlaceholderText="Enter text/number to send"/>
-                <Button Content="Write Value as UTF-8" Click="{x:Bind CharacteristicWriteButton_Click}" Margin="0,10,0,0"/>
+                <Button x:Name="WriteButton" Content="Write Value as UTF-8" Click="{x:Bind CharacteristicWriteButton_Click}" Margin="0,10,0,0"/>
                 <TextBlock Text="Sended Text from PC to BM+S50: "/>
                 <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="400">
                     <TextBlock x:Name="SendedText" FontWeight="Bold" TextWrapping="Wrap"/>

@@ -82,36 +82,51 @@ namespace Terminal_IO.Service
 
         public async Task GetCharacteristics()
         {
-            var accessStatus = await _terminalIOService.RequestAccessAsync();
+            if(_terminalIOService != null)
+            {
+                var accessStatus = await _terminalIOService.RequestAccessAsync();
 
-            if (accessStatus == DeviceAccessStatus.Allowed)
-            {           
-                var result = await _terminalIOService.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
-
-                if (result.Status == GattCommunicationStatus.Success)
+                if (accessStatus == DeviceAccessStatus.Allowed)
                 {
-                    var characteristics = result.Characteristics;
-                    foreach (var characteristic in characteristics)
+                    var result = await _terminalIOService.GetCharacteristicsAsync(BluetoothCacheMode.Uncached);
+
+                    if (result.Status == GattCommunicationStatus.Success)
                     {
-                        if(characteristic.Uuid == UARTDataRX)
+                        var characteristics = result.Characteristics;
+                        foreach (var characteristic in characteristics)
                         {
-                            UARTDataRXCharacteristic = characteristic;
+                            if (characteristic.Uuid == UARTDataRX)
+                            {
+                                UARTDataRXCharacteristic = characteristic;
+                            }
+                            else if (characteristic.Uuid == UARTDataTX)
+                            {
+                                UARTDataTXCharacteristic = characteristic;
+                            }
+                            else if (characteristic.Uuid == UARTCreditsRX)
+                            {
+                                UARTCreditsRXCharacteristic = characteristic;
+                            }
+                            else if (characteristic.Uuid == UARTCreditsTX)
+                            {
+                                UARTCreditsTXCharacteristic = characteristic;
+                            }
+                            Debug.WriteLine(String.Format("Added {0}", characteristic.Uuid));
                         }
-                        else if(characteristic.Uuid == UARTDataTX)
-                        {
-                            UARTDataTXCharacteristic = characteristic;
-                        }
-                        else if(characteristic.Uuid == UARTCreditsRX)
-                        {
-                            UARTCreditsRXCharacteristic = characteristic;
-                        }
-                        else if(characteristic.Uuid == UARTCreditsTX)
-                        {
-                            UARTCreditsTXCharacteristic = characteristic;
-                        }
-                        Debug.WriteLine(String.Format("Added {0}", characteristic.Uuid));
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Can not get characteristic");
                     }
                 }
+                else
+                {
+                    Debug.WriteLine("Can not get Service");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Can not get Service");
             }
         }
 

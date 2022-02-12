@@ -164,7 +164,6 @@ namespace Terminal_IO.View
             if (bleDevice != null)
             {
                 (Application.Current as App).SelectedBleDeviceId = bleDevice.Id;
-                (Application.Current as App).SelectedBleDeviceName = bleDevice.Name;
             }
         }
 

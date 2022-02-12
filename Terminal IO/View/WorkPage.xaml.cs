@@ -41,7 +41,7 @@ namespace Terminal_IO.View
             var writer = new DataWriter();
             writer.ByteOrder = ByteOrder.LittleEndian;
             writer.WriteByte(Byte.MaxValue);
-            await _initialService.UARTCreditsRXCharacteristic.WriteValueWithResultAsync(writer.DetachBuffer());
+            await _initialService.UARTCreditsRXCharacteristic.WriteValueWithResultAsync(writer.DetachBuffer());              
         }
 
         private async void ActivateNotification()
@@ -55,6 +55,10 @@ namespace Terminal_IO.View
             {
                 AddValueChangedHandler1();                
             }
+            else
+            {
+                Notify("Unreachable.", NotifyType.StatusMessage);
+            }
         }
 
         private async void ActivateIndication()
@@ -67,6 +71,10 @@ namespace Terminal_IO.View
             if (status == GattCommunicationStatus.Success)
             {
                 AddValueChangedHandler2();
+            }
+            else
+            {
+                Notify("Unreachable.", NotifyType.StatusMessage);
             }
         }
 
@@ -95,11 +103,22 @@ namespace Terminal_IO.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             BackButton.IsEnabled = false;
+            WriteButton.IsEnabled = false;
             await _initialService.GetServices((Application.Current as App).SelectedBleDeviceId);
             await _initialService.GetCharacteristics();
-            ActivateIndication();
-            ActivateNotification();
-            WriteToUARTCreditsRX();
+            if(_initialService.UARTCreditsRXCharacteristic != null)
+            {
+                ActivateIndication();
+                ActivateNotification();
+                WriteToUARTCreditsRX();
+            }
+            else
+            {
+                Notify("Unreachable.", NotifyType.StatusMessage);
+                _initialService.Clear();
+                this.Frame.Navigate(typeof(DeviceListPage));
+            }
+            WriteButton.IsEnabled = true;
             BackButton.IsEnabled = true;
         }
 
@@ -124,7 +143,7 @@ namespace Terminal_IO.View
             }
             else
             {
-                StatusLabel.Text = "No data to write to device";
+                Notify("Text can not be empty.", NotifyType.StatusMessage);
             }
         }
 
@@ -155,6 +174,9 @@ namespace Terminal_IO.View
                 case NotifyType.NumerOfData:
                     NumerOfData.Text = strMessage;
                     break;
+                case NotifyType.StatusMessage:
+                    StatusLabel.Text = strMessage;
+                    break;
             }           
         }
 
@@ -162,7 +184,8 @@ namespace Terminal_IO.View
         {
             SendedMessage,
             ReceivedMessage,
-            NumerOfData
+            NumerOfData,
+            StatusMessage
         };
     }
 }
