@@ -192,7 +192,7 @@
     <Content Include="Screenshots\Screenshot2.jpg" />
     <Content Include="Screenshots\Screenshot3.jpg" />
     <Content Include="Screenshots\Screenshot4.jpg" />
-    <Content Include="Screenshots\Screenshot5.jpg.png" />
+    <Content Include="Screenshots\Screenshot5.jpg" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
